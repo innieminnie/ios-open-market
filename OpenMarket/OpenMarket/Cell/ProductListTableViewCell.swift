@@ -18,7 +18,7 @@ class ProductListTableViewCell: UITableViewCell {
         productPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         productPriceLabel.font = .preferredFont(forTextStyle: .body)
         productPriceLabel.adjustsFontForContentSizeCategory = true
-        productPriceLabel.textColor = .red
+        productPriceLabel.textColor = .gray
         return productPriceLabel
     }()
     lazy var productDiscountedPriceLabel: UILabel = {

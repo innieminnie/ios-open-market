@@ -40,36 +40,32 @@ extension ListViewController: UITableViewDataSource {
             debugPrint("CellError")
             return UITableViewCell()
         }
+        cell.backgroundColor = .white
         cell.productNameLabel.text = product.title
-        cell.productStockLabel.text = "잔여수량 : \(stock.distinguishNumberUnit())"
         cell.productPriceLabel.text = "\(product.currency) \(price.distinguishNumberUnit())"
-        
         if let discountedPrice = product.discountedPrice {
-            let originalPriceText = "\(product.currency) \(price.distinguishNumberUnit())"
-            let attributeText = NSMutableAttributedString(string: originalPriceText)
-            let range = originalPriceText.checkRange(of: originalPriceText)
-            attributeText.addAttribute(.strikethroughStyle, value:1,  range: range)
-            cell.productPriceLabel.attributedText = attributeText
-            cell.productDiscountedPriceLabel.text = "\(product.currency) \((price - discountedPrice).distinguishNumberUnit())"
+            let attrRedStrikethroughStyle = [
+                NSAttributedString.Key.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue)
+            ]
+            
+            let text = NSAttributedString(string: "\(product.currency) \(price.distinguishNumberUnit())", attributes: attrRedStrikethroughStyle)
+            
+            cell.productPriceLabel.attributedText = text
+            cell.productPriceLabel.textColor = .red
+            cell.productDiscountedPriceLabel.text = "\(product.currency) \((price-discountedPrice).distinguishNumberUnit())"
+            
         }
-        
-        cell.accessoryType = .disclosureIndicator
-        
+        cell.productStockLabel.text = "잔여수량 : \(stock.distinguishNumberUnit())"
         if stock == 0 {
             cell.productStockLabel.text = "품절"
             cell.productStockLabel.textColor = .systemOrange
         }
-        
         DispatchQueue.global().async {
             guard let imageURLText = product.thumbnails?.first, let imageURL = URL(string: imageURLText), let imageData: Data = try? Data(contentsOf: imageURL)  else {
                 return
             }
             DispatchQueue.main.async {
-                if let index: IndexPath = tableView.indexPath(for: cell) {
-                    if index.row == indexPath.row {
-                        cell.productThumbnailImageView.image = UIImage(data: imageData)
-                    }
-                }
+                cell.productThumbnailImageView.image = UIImage(data: imageData)
             }
         }
         return cell
