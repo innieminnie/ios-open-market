@@ -7,7 +7,8 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    let openMarketAPIManager = OpenMarketAPIManager()
+    
     let listViewController = ListViewController()
     let gridViewController = GridViewController()
     let listPresentingStyleSelection = ["LIST","GRID"]
@@ -25,39 +26,39 @@ class ViewController: UIViewController {
         return button
     }()
     
+    private var currentPage = 1
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationItem()
         setUpView()
         
-        let testProduct = ProductRegistration(title: "오늘의태태8", descriptions: "hihi", price: 50000, currency: "KRW", stock: 50, discountedPrice: nil, images: [], password: "1234")
-
-        OpenMarketAPIManager.shared.requestRegistration(product: testProduct) { (result) in
-            switch result {
-            case .success(let testProduct):
-                print(testProduct)
-            case .failure(let error):
-                print(error)
-            }
-        }
-        OpenMarketAPIManager.shared.requestProduct(of: 90) { (result) in
-            switch result {
-            case .success(let product):
-                print(product)
-            case .failure(let error):
-                print(error)
-            }
-        }
+        listViewController.tableView.prefetchDataSource = self
+        gridViewController.collectionView.prefetchDataSource = self
+        
+        requestProductList()
     }
     
-    @objc private func didTapSegment(segment: UISegmentedControl) {
-        if segment.selectedSegmentIndex == 0 {
-            listViewController.view.isHidden = false
-            gridViewController.view.isHidden = true
-        } else {
-            gridViewController.view.isHidden = false
-            listViewController.view.isHidden = true
+    private func requestProductList() {
+        openMarketAPIManager.requestProductList(of: currentPage) { (result) in
+            switch result {
+            case .success (let product):
+                guard product.items.count > 0 else {
+                    return
+                }
+                
+                self.listViewController.productList.append(contentsOf: product.items)
+                self.gridViewController.productList.append(contentsOf: product.items)
+                
+                DispatchQueue.main.async {
+                    self.listViewController.tableView.reloadData()
+                    self.gridViewController.collectionView.reloadData()
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
+        self.currentPage += 1
     }
     
     private func setUpView() {
@@ -81,8 +82,35 @@ class ViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = addProductButton
     }
     
+    @objc private func didTapSegment(segment: UISegmentedControl) {
+        if segment.selectedSegmentIndex == 0 {
+            listViewController.view.isHidden = false
+            gridViewController.view.isHidden = true
+        } else {
+            gridViewController.view.isHidden = false
+            listViewController.view.isHidden = true
+        }
+    }
+    
     @objc private func addButtonTapped(_ sender: Any) {
         print("button pressed")
     }
 }
-
+extension ViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for index in indexPaths {
+            if index.row >= listViewController.productList.count - 3 {
+                requestProductList()
+            }
+        }
+    }
+}
+extension ViewController: UICollectionViewDataSourcePrefetching  {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for index in indexPaths {
+            if index.row >= gridViewController.productList.count - 7 {
+                requestProductList()
+            }
+        }
+    }
+}

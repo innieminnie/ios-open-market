@@ -12,17 +12,6 @@ class GridViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        OpenMarketAPIManager.shared.requestProductList(of: 7) { (result) in
-            switch result {
-            case .success (let product):
-                self.productList.append(contentsOf: product.items)
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
         setUpCollectionView()
     }
     private func setUpCollectionView() {

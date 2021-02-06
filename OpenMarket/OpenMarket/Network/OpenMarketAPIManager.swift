@@ -19,13 +19,11 @@ enum OpenMarketNetworkError: Error {
 }
 
 struct OpenMarketAPIManager {
-    static let shared = OpenMarketAPIManager()
-    
     static let baseURL = "https://camp-open-market.herokuapp.com"
     private let boundary = UUID().uuidString
     let session: URLSessionProtocol
     
-    private init(session: URLSessionProtocol = URLSession(configuration: .default)) {
+    init(session: URLSessionProtocol = URLSession(configuration: .default)) {
         self.session = session
     }
     

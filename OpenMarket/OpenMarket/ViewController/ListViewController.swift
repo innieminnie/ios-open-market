@@ -7,17 +7,6 @@ class ListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        OpenMarketAPIManager.shared.requestProductList(of: 7) { (result) in
-            switch result {
-            case .success (let product):
-                self.productList.append(contentsOf: product.items)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
         setUpTableView()
     }
     
