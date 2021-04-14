@@ -93,7 +93,8 @@ class ViewController: UIViewController {
     }
     
     @objc private func addButtonTapped(_ sender: Any) {
-        print("button pressed")
+        let registerProductViewController = RegisterProductViewController()
+        self.present(registerProductViewController, animated: true, completion: nil)
     }
 }
 extension ViewController: UITableViewDataSourcePrefetching {

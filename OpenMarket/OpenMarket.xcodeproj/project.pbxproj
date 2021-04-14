@@ -28,6 +28,7 @@
 		D928369025BF2B6C00C98F6F /* ProductList.swift in Sources */ = {isa = PBXBuildFile; fileRef = D928368F25BF2B6C00C98F6F /* ProductList.swift */; };
 		D928369E25BF31A600C98F6F /* OpenMarketAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D928369D25BF31A600C98F6F /* OpenMarketAPIManager.swift */; };
 		D92DDE2025C1D5E400036BB9 /* OpenMarketURLMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92DDE1F25C1D5E400036BB9 /* OpenMarketURLMaker.swift */; };
+		D9E622D3262771D100DE5CB6 /* RegisterProductlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E622D2262771D100DE5CB6 /* RegisterProductlViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		D9B255B825C071030039C0FE /* MockAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPI.swift; sourceTree = "<group>"; };
 		D9B255BE25C074740039C0FE /* MockURLSessionDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSessionDataTask.swift; sourceTree = "<group>"; };
 		D9B255C225C0748D0039C0FE /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		D9E622D2262771D100DE5CB6 /* RegisterProductlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterProductlViewController.swift; sourceTree = "<group>"; };
 		D9F3E3A825C0FD240049B4C1 /* SecondOpenMarketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SecondOpenMarketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -152,6 +154,7 @@
 				C70FB0FE25BEF61C00C9924E /* ViewController.swift */,
 				82B552ED25C53F9E00C76325 /* ListViewController.swift */,
 				82B552E825C53F3600C76325 /* GridViewController.swift */,
+				D9E622D2262771D100DE5CB6 /* RegisterProductlViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 				82186D6525C14CCF003AD8FB /* HTTPMethods.swift in Sources */,
 				C70FB0FB25BEF61C00C9924E /* AppDelegate.swift in Sources */,
 				82B552E425C2BF8D00C76325 /* ProductListTableViewCell.swift in Sources */,
+				D9E622D3262771D100DE5CB6 /* RegisterProductlViewController.swift in Sources */,
 				C70FB0FD25BEF61C00C9924E /* SceneDelegate.swift in Sources */,
 				82186D6D25C14E01003AD8FB /* FeatureList.swift in Sources */,
 			);
