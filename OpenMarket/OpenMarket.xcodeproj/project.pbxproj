@@ -12,7 +12,6 @@
 		82186D6D25C14E01003AD8FB /* FeatureList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82186D6C25C14E01003AD8FB /* FeatureList.swift */; };
 		824791C925CD425800353D6E /* StringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824791C825CD425800353D6E /* StringFormatter.swift */; };
 		82934AC425BFB022006C7624 /* MockOpenMarketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82934AC325BFB022006C7624 /* MockOpenMarketTests.swift */; };
-		82A18B8F25C923D0003A38B3 /* MockURLSessionUploadTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A18B8E25C923D0003A38B3 /* MockURLSessionUploadTask.swift */; };
 		82A18B9425C9249A003A38B3 /* MockAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B255B825C071030039C0FE /* MockAPI.swift */; };
 		82A18B9B25C9249E003A38B3 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B255C225C0748D0039C0FE /* MockURLSession.swift */; };
 		82A18BA225C924A3003A38B3 /* MockURLSessionDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B255BE25C074740039C0FE /* MockURLSessionDataTask.swift */; };
@@ -56,7 +55,6 @@
 		82934AC125BFB022006C7624 /* OpenMarketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenMarketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		82934AC325BFB022006C7624 /* MockOpenMarketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOpenMarketTests.swift; sourceTree = "<group>"; };
 		82934AC525BFB022006C7624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		82A18B8E25C923D0003A38B3 /* MockURLSessionUploadTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSessionUploadTask.swift; sourceTree = "<group>"; };
 		82A18BA925C943F5003A38B3 /* ProductGridViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductGridViewCell.swift; sourceTree = "<group>"; };
 		82B552E325C2BF8D00C76325 /* ProductListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListTableViewCell.swift; sourceTree = "<group>"; };
 		82B552E825C53F3600C76325 /* GridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewController.swift; sourceTree = "<group>"; };
@@ -195,7 +193,6 @@
 				D9B255B825C071030039C0FE /* MockAPI.swift */,
 				D9B255C225C0748D0039C0FE /* MockURLSession.swift */,
 				D9B255BE25C074740039C0FE /* MockURLSessionDataTask.swift */,
-				82A18B8E25C923D0003A38B3 /* MockURLSessionUploadTask.swift */,
 			);
 			path = MockModel;
 			sourceTree = "<group>";
@@ -331,7 +328,6 @@
 			files = (
 				82A18B9B25C9249E003A38B3 /* MockURLSession.swift in Sources */,
 				82A18BA225C924A3003A38B3 /* MockURLSessionDataTask.swift in Sources */,
-				82A18B8F25C923D0003A38B3 /* MockURLSessionUploadTask.swift in Sources */,
 				82A18B9425C9249A003A38B3 /* MockAPI.swift in Sources */,
 				82934AC425BFB022006C7624 /* MockOpenMarketTests.swift in Sources */,
 			);

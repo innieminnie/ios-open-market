@@ -5,7 +5,6 @@ import UIKit
 protocol URLSessionProtocol {
     func dataTask(with request: URLRequest,
                   completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
-    func uploadTask(with request: URLRequest, from bodyData: Data?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionUploadTask
 }
 
 extension URLSession: URLSessionProtocol { }
@@ -36,7 +35,7 @@ struct OpenMarketAPIManager {
         fetchData(feature: .listSearch(page: page), url: urlRequest, completion: completionHandler)
     }
     
-    func requestRegistration(product: ProductRegistration, completionHandler: @escaping (Result<Data,OpenMarketNetworkError>) -> ()) {
+    func requestRegistration(product: ProductRegistration, completionHandler: @escaping (Result<Data,OpenMarketNetworkError>) -> Void) {
         guard var urlRequest = OpenMarketURLMaker.makeRequestURL(httpMethod: .post, mode: .productRegistration) else {
             print(OpenMarketNetworkError.failedURLRequest)
             return
@@ -57,6 +56,7 @@ struct OpenMarketAPIManager {
             print(OpenMarketNetworkError.failedURLRequest)
             return
         }
+        
         fetchData(feature: .productSearch(id: id), url: urlRequest, completion: completionHandler)
     }
 }

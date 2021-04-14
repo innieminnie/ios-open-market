@@ -3,20 +3,20 @@ import XCTest
 
 class MockOpenMarketTests: XCTestCase {
     var sut: OpenMarketAPIManager!
-
+    
     override func setUpWithError() throws {
         super.setUp()
         sut = .init(session: MockURLSession())
     }
-
+    
     override func tearDownWithError() throws {
         super.tearDown()
     }
-
+    
     func testFetchingProductListofPageOne() {
         let expectation = XCTestExpectation()
         let response = try? JSONDecoder().decode(ProductList.self, from: MockAPI.test.sampleItems.data)
-
+        
         sut.requestProductList(of: 1) { (result) in
             switch result {
             case .success(let productList):
@@ -32,14 +32,14 @@ class MockOpenMarketTests: XCTestCase {
             }
             expectation.fulfill()
         }
-
+        
         wait(for: [expectation], timeout: 5.0)
     }
-
+    
     func testFetchingProductListofPageOneFailure() {
         sut = .init(session: MockURLSession(makeRequestFail: true))
         let expectation = XCTestExpectation()
-
+        
         sut.requestProductList(of: 1) { (result) in
             switch result {
             case .success:
@@ -50,5 +50,33 @@ class MockOpenMarketTests: XCTestCase {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 5.0)
+    }
+    
+    func testFetchingProduct() {
+        let expectation = XCTestExpectation()
+        let response = try? JSONDecoder().decode(Product.self, from: MockAPI.test.sampleItem.data)
+        
+        if let id = response?.id {
+            sut.requestProduct(of: id) { (result) in
+                switch result {
+                case .success(let product):
+                    XCTAssertEqual(product.id, id)
+                    XCTAssertEqual(product.title, response?.title)
+                    XCTAssertEqual(product.descriptions, response?.descriptions)
+                    XCTAssertEqual(product.price, response?.price)
+                    XCTAssertEqual(product.currency, response?.currency)
+                    XCTAssertEqual(product.stock, response?.stock)
+                    XCTAssertEqual(product.discountedPrice, nil)
+                    XCTAssertEqual(product.thumbnails, response?.thumbnails)
+                    XCTAssertEqual(product.images, response?.images)
+                    XCTAssertEqual(product.registrationDate, product.registrationDate)
+                    XCTAssertEqual(product.password, nil)
+                case .failure:
+                    XCTFail()
+                }
+                expectation.fulfill()
+            }
+            wait(for: [expectation], timeout: 5.0)
+        }
     }
 }
