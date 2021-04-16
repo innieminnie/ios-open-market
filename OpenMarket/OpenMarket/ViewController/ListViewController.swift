@@ -2,18 +2,23 @@
 import UIKit
 
 class ListViewController: UIViewController {
+    let openMarketAPIManager = OpenMarketAPIManager()
     let tableView = UITableView()
     var productList = [Product]()
-    
+
+    private var currentPage = 1
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTableView()
+        requestProductList()
     }
-    
+
     private func setUpTableView() {
         tableView.dataSource = self
-        self.tableView.register(ProductListTableViewCell.self, forCellReuseIdentifier: ProductListTableViewCell.identifier)
-        
+        tableView.prefetchDataSource = self
+        tableView.register(ProductListTableViewCell.self, forCellReuseIdentifier: ProductListTableViewCell.identifier)
+
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
         
@@ -26,7 +31,6 @@ class ListViewController: UIViewController {
         ])
     }
 }
-
 extension ListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return productList.count
@@ -69,6 +73,36 @@ extension ListViewController: UITableViewDataSource {
             }
         }
         return cell
+    }
+}
+extension ListViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for index in indexPaths {
+            if index.row >= productList.count - 3 {
+                requestProductList()
+            }
+        }
+    }
+}
+extension ListViewController {
+    private func requestProductList() {
+        openMarketAPIManager.requestProductList(of: currentPage) { (result) in
+            switch result {
+            case .success (let product):
+                guard product.items.count > 0 else {
+                    return
+                }
+
+                self.productList.append(contentsOf: product.items)
+
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        self.currentPage += 1
     }
 }
 extension String {

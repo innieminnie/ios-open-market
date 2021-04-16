@@ -2,6 +2,7 @@
 import UIKit
 
 class GridViewController: UIViewController {
+    let openMarketAPIManager = OpenMarketAPIManager()
     let collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .vertical
@@ -9,16 +10,19 @@ class GridViewController: UIViewController {
         return collectionView
     }()
     var productList = [Product]()
-    
+    private var currentPage = 1
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpCollectionView()
+        requestProductList()
     }
     private func setUpCollectionView() {
         collectionView.dataSource = self
+        collectionView.prefetchDataSource = self
         collectionView.delegate = self
         self.collectionView.register(ProductGridViewCell.self, forCellWithReuseIdentifier: ProductGridViewCell.identifier)
-        
+
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
         view.backgroundColor = .white
@@ -33,7 +37,6 @@ class GridViewController: UIViewController {
         ])
     }
 }
-
 extension GridViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return productList.count
@@ -78,7 +81,6 @@ extension GridViewController: UICollectionViewDataSource {
         return cell
     }
 }
-
 extension GridViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -88,5 +90,35 @@ extension GridViewController: UICollectionViewDelegateFlowLayout {
         let width: CGFloat = (collectionView.frame.width - 30) / 2
         let height: CGFloat = width * 1.5
         return CGSize(width: width, height: height)
+    }
+}
+extension GridViewController: UICollectionViewDataSourcePrefetching  {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for index in indexPaths {
+            if index.row >= productList.count - 7 {
+                requestProductList()
+            }
+        }
+    }
+}
+extension GridViewController {
+    private func requestProductList() {
+        openMarketAPIManager.requestProductList(of: currentPage) { (result) in
+            switch result {
+            case .success (let product):
+                guard product.items.count > 0 else {
+                    return
+                }
+
+                self.productList.append(contentsOf: product.items)
+
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        self.currentPage += 1
     }
 }
