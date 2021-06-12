@@ -3,17 +3,37 @@ import UIKit
 
 class ProductListTableViewCell: UITableViewCell {
     static let identifier: String = "ProductListTableViewCell"
-    lazy var productNameLabel: UILabel = {
+    
+    private lazy var productThumbnailImageView: UIImageView = {
+        let productThumbnailImageView = UIImageView()
+        productThumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
+        productThumbnailImageView.contentMode = .scaleToFill
+        return productThumbnailImageView
+    }()
+    
+    private lazy var productNameLabel: UILabel = {
         let productNameLabel = UILabel()
         productNameLabel.translatesAutoresizingMaskIntoConstraints = false
         productNameLabel.font = .preferredFont(forTextStyle: .headline)
         productNameLabel.adjustsFontForContentSizeCategory = true
+        productNameLabel.adjustsFontSizeToFitWidth = true
         productNameLabel.textColor = .black
-        productNameLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        productNameLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         return productNameLabel
     }()
-    lazy var productPriceLabel: UILabel = {
+    
+    private lazy var productStockLabel: UILabel = {
+        let productStockLabel = UILabel()
+        productStockLabel.translatesAutoresizingMaskIntoConstraints = false
+        productStockLabel.font = .preferredFont(forTextStyle: .body)
+        productStockLabel.adjustsFontForContentSizeCategory = true
+        productStockLabel.adjustsFontSizeToFitWidth = true
+        productStockLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        productStockLabel.textColor = .gray
+        productStockLabel.textAlignment = .right
+        return productStockLabel
+    }()
+    
+    private lazy var productPriceLabel: UILabel = {
         let productPriceLabel = UILabel()
         productPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         productPriceLabel.font = .preferredFont(forTextStyle: .body)
@@ -21,30 +41,14 @@ class ProductListTableViewCell: UITableViewCell {
         productPriceLabel.textColor = .gray
         return productPriceLabel
     }()
-    lazy var productDiscountedPriceLabel: UILabel = {
+    
+    private lazy var productDiscountedPriceLabel: UILabel = {
         let productDiscountedPriceLabel = UILabel()
         productDiscountedPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         productDiscountedPriceLabel.font = .preferredFont(forTextStyle: .body)
         productDiscountedPriceLabel.adjustsFontForContentSizeCategory = true
         productDiscountedPriceLabel.textColor = .gray
         return productDiscountedPriceLabel
-    }()
-    lazy var productStockLabel: UILabel = {
-        let productStockLabel = UILabel()
-        productStockLabel.translatesAutoresizingMaskIntoConstraints = false
-        productStockLabel.font = .preferredFont(forTextStyle: .body)
-        productStockLabel.adjustsFontSizeToFitWidth = true
-        productStockLabel.adjustsFontForContentSizeCategory = true
-        productStockLabel.textColor = .gray
-        productStockLabel.textAlignment = .right
-        productStockLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        productStockLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        return productStockLabel
-    }()
-    lazy var productThumbnailImageView: UIImageView = {
-        let productThumbnailImageView = UIImageView()
-        productThumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
-        return productThumbnailImageView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -57,37 +61,69 @@ class ProductListTableViewCell: UITableViewCell {
     }
     
     private func setUpConstraints() {
+        self.contentView.addSubview(productThumbnailImageView)
         self.contentView.addSubview(productNameLabel)
+        self.contentView.addSubview(productStockLabel)
         self.contentView.addSubview(productPriceLabel)
         self.contentView.addSubview(productDiscountedPriceLabel)
-        self.contentView.addSubview(productThumbnailImageView)
-        self.contentView.addSubview(productStockLabel)
         
         NSLayoutConstraint.activate([
-            productThumbnailImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            productThumbnailImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
             productThumbnailImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             productThumbnailImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
-            productThumbnailImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            productThumbnailImageView.heightAnchor.constraint(equalTo: productThumbnailImageView.widthAnchor),
+            productThumbnailImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
             
             productNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            productNameLabel.leadingAnchor.constraint(equalTo: productThumbnailImageView.trailingAnchor, constant: 10),
+            productNameLabel.leadingAnchor.constraint(equalTo: productThumbnailImageView.trailingAnchor, constant: 5),
+            
+            productStockLabel.topAnchor.constraint(equalTo: productNameLabel.topAnchor),
+            productStockLabel.leadingAnchor.constraint(equalTo: productNameLabel.trailingAnchor, constant: 3),
+            productStockLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
             productPriceLabel.topAnchor.constraint(equalTo: productNameLabel.bottomAnchor, constant: 5),
-            productPriceLabel.leadingAnchor.constraint(equalTo: productThumbnailImageView.trailingAnchor, constant: 5),
+            productPriceLabel.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
             productPriceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
-        
+            
             productDiscountedPriceLabel.topAnchor.constraint(equalTo: productPriceLabel.topAnchor),
             productDiscountedPriceLabel.leadingAnchor.constraint(equalTo: productPriceLabel.trailingAnchor, constant: 5),
             productDiscountedPriceLabel.bottomAnchor.constraint(equalTo: productPriceLabel.bottomAnchor),
-            
-            productStockLabel.topAnchor.constraint(equalTo: productNameLabel.topAnchor),
-            productStockLabel.leadingAnchor.constraint(equalTo: productNameLabel.trailingAnchor, constant: 5),
-            productStockLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            
         ])
     }
+    
     override func prepareForReuse() {
+        self.contentView.backgroundColor = .white
         productThumbnailImageView.image = nil
+        productNameLabel.text = nil
+        productStockLabel.text = nil
         productStockLabel.textColor = .gray
+        productPriceLabel.attributedText = NSMutableAttributedString(string: "")
+        productStockLabel.textColor = .gray
+        productDiscountedPriceLabel.text = nil
+        productDiscountedPriceLabel.textColor = .gray
+    }
+    
+    func updateUI(with product: Product, imageData: UIImage?) {
+        self.productThumbnailImageView.image = imageData ?? UIImage(systemName: "multiply.circle.fill")
+        self.productNameLabel.text = product.title
+        self.productStockLabel.text = "잔여수량 : \(product.stock.distinguishNumberUnit())"
+        
+        if product.stock == 0 {
+            self.productStockLabel.text = "품절"
+            self.productStockLabel.textColor = .systemOrange
+        }
+        
+        guard let  discountedPrice = product.discountedPrice else {
+            let text = NSMutableAttributedString(string: "\(product.currency) \(product.price.distinguishNumberUnit())")
+            self.productPriceLabel.attributedText = text
+            self.productPriceLabel.textColor = .gray
+            
+            return
+        }
+        
+        let text = NSMutableAttributedString(string: "\(product.currency) \(product.price.distinguishNumberUnit())", attributes: [NSAttributedString.Key.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue)])
+        self.productPriceLabel.attributedText = text
+        self.productPriceLabel.textColor = .red
+        self.productDiscountedPriceLabel.text = "\(product.currency) \((product.price-discountedPrice).distinguishNumberUnit())"
     }
 }
