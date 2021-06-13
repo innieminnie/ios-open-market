@@ -19,7 +19,6 @@ class GridViewController: UIViewController {
     }
     private func setUpCollectionView() {
         collectionView.dataSource = self
-        collectionView.prefetchDataSource = self
         collectionView.delegate = self
         self.collectionView.register(ProductGridViewCell.self, forCellWithReuseIdentifier: ProductGridViewCell.identifier)
 
@@ -44,40 +43,26 @@ extension GridViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let product = productList[indexPath.row]
-        let price = product.price
-        let stock = product.stock
+       
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductGridViewCell.identifier, for: indexPath) as? ProductGridViewCell else {
             debugPrint("CellError")
             return UICollectionViewCell()
         }
-        cell.backgroundColor = .white
-        cell.productNameLabel.text = product.title
-        cell.productPriceLabel.text = "\(product.currency) \(price.distinguishNumberUnit())"
-        if let discountedPrice = product.discountedPrice {
-            let attrRedStrikethroughStyle = [
-                NSAttributedString.Key.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue)
-            ]
-            
-            let text = NSAttributedString(string: "\(product.currency) \(price.distinguishNumberUnit())", attributes: attrRedStrikethroughStyle)
-            
-            cell.productPriceLabel.attributedText = text
-            cell.productPriceLabel.textColor = .red
-            cell.productDiscountedPriceLabel.text = "\(product.currency) \((price-discountedPrice).distinguishNumberUnit())"
-            
-        }
-        cell.productStockLabel.text = "잔여수량 : \(stock.distinguishNumberUnit())"
-        if stock == 0 {
-            cell.productStockLabel.text = "품절"
-            cell.productStockLabel.textColor = .systemOrange
-        }
+        
         DispatchQueue.global().async {
-            guard let imageURLText = product.thumbnails?.first, let imageURL = URL(string: imageURLText), let imageData: Data = try? Data(contentsOf: imageURL)  else {
+            guard let imageURLText = product.thumbnails?.first, let imageURL = URL(string: imageURLText), let imageData = try? Data(contentsOf: imageURL) else {
+                DispatchQueue.main.async {
+                    cell.updateUI(with: product, imageData: UIImage(systemName: "multiply.circle.fill"))
+                }
                 return
             }
+            
+            
             DispatchQueue.main.async {
-                cell.productThumbnailImageView.image = UIImage(data: imageData)
+                cell.updateUI(with: product, imageData: UIImage(data: imageData))
             }
         }
+        
         return cell
     }
 }
@@ -90,15 +75,6 @@ extension GridViewController: UICollectionViewDelegateFlowLayout {
         let width: CGFloat = (collectionView.frame.width - 30) / 2
         let height: CGFloat = width * 1.5
         return CGSize(width: width, height: height)
-    }
-}
-extension GridViewController: UICollectionViewDataSourcePrefetching  {
-    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        for index in indexPaths {
-            if index.row >= productList.count - 7 {
-                requestProductList()
-            }
-        }
     }
 }
 extension GridViewController {
@@ -115,10 +91,12 @@ extension GridViewController {
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
+                
+                self.currentPage += 1
+                self.requestProductList()
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
-        self.currentPage += 1
     }
 }
