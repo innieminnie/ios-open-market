@@ -7,7 +7,6 @@ class ProductListTableViewCell: UITableViewCell {
     private lazy var productThumbnailImageView: UIImageView = {
         let productThumbnailImageView = UIImageView()
         productThumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
-        productThumbnailImageView.contentMode = .scaleToFill
         return productThumbnailImageView
     }()
     
@@ -16,7 +15,6 @@ class ProductListTableViewCell: UITableViewCell {
         productNameLabel.translatesAutoresizingMaskIntoConstraints = false
         productNameLabel.font = .preferredFont(forTextStyle: .headline)
         productNameLabel.adjustsFontForContentSizeCategory = true
-        productNameLabel.adjustsFontSizeToFitWidth = true
         productNameLabel.textColor = .black
         return productNameLabel
     }()
@@ -26,8 +24,6 @@ class ProductListTableViewCell: UITableViewCell {
         productStockLabel.translatesAutoresizingMaskIntoConstraints = false
         productStockLabel.font = .preferredFont(forTextStyle: .body)
         productStockLabel.adjustsFontForContentSizeCategory = true
-        productStockLabel.adjustsFontSizeToFitWidth = true
-        productStockLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         productStockLabel.textColor = .gray
         productStockLabel.textAlignment = .right
         return productStockLabel
@@ -72,22 +68,20 @@ class ProductListTableViewCell: UITableViewCell {
             productThumbnailImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             productThumbnailImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
             productThumbnailImageView.heightAnchor.constraint(equalTo: productThumbnailImageView.widthAnchor),
-            productThumbnailImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
+            productThumbnailImageView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -5),
             
-            productNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            productStockLabel.topAnchor.constraint(equalTo: productThumbnailImageView.topAnchor),
+            productStockLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            
+            productNameLabel.topAnchor.constraint(equalTo:  productStockLabel.bottomAnchor, constant: 5),
             productNameLabel.leadingAnchor.constraint(equalTo: productThumbnailImageView.trailingAnchor, constant: 5),
-            
-            productStockLabel.topAnchor.constraint(equalTo: productNameLabel.topAnchor),
-            productStockLabel.leadingAnchor.constraint(equalTo: productNameLabel.trailingAnchor, constant: 3),
-            productStockLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
             productPriceLabel.topAnchor.constraint(equalTo: productNameLabel.bottomAnchor, constant: 5),
             productPriceLabel.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
-            productPriceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
             
             productDiscountedPriceLabel.topAnchor.constraint(equalTo: productPriceLabel.topAnchor),
             productDiscountedPriceLabel.leadingAnchor.constraint(equalTo: productPriceLabel.trailingAnchor, constant: 5),
-            productDiscountedPriceLabel.bottomAnchor.constraint(equalTo: productPriceLabel.bottomAnchor),
+            productDiscountedPriceLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -10)
         ])
     }
     
