@@ -3,67 +3,74 @@ import UIKit
 
 class ProductGridViewCell: UICollectionViewCell {
     static let identifier: String = "ProductGridViewCell"
-    lazy var productNameLabel: UILabel = {
+    
+    private lazy var productThumbnailImageView: UIImageView = {
+        let productThumbnailImageView = UIImageView()
+        productThumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
+        return productThumbnailImageView
+    }()
+    
+    private lazy var productNameLabel: UILabel = {
         let productNameLabel = UILabel()
         productNameLabel.translatesAutoresizingMaskIntoConstraints = false
         productNameLabel.font = .preferredFont(forTextStyle: .headline)
-        productNameLabel.textAlignment = .center
         productNameLabel.adjustsFontForContentSizeCategory = true
         productNameLabel.textColor = .black
-        productNameLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        productNameLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         productNameLabel.adjustsFontSizeToFitWidth = true
+        productNameLabel.textAlignment = .center
         return productNameLabel
     }()
-    lazy var productPriceLabel: UILabel = {
+    
+    private lazy var productPriceLabel: UILabel = {
         let productPriceLabel = UILabel()
         productPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         productPriceLabel.font = .preferredFont(forTextStyle: .body)
-        productPriceLabel.textAlignment = .center
         productPriceLabel.adjustsFontForContentSizeCategory = true
         productPriceLabel.textColor = .gray
         productPriceLabel.adjustsFontSizeToFitWidth = true
         return productPriceLabel
     }()
-    lazy var productDiscountedPriceLabel: UILabel = {
+    
+    private lazy var productDiscountedPriceLabel: UILabel = {
         let productDiscountedPriceLabel = UILabel()
         productDiscountedPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         productDiscountedPriceLabel.font = .preferredFont(forTextStyle: .body)
-        productDiscountedPriceLabel.textAlignment = .center
         productDiscountedPriceLabel.adjustsFontForContentSizeCategory = true
         productDiscountedPriceLabel.textColor = .gray
         productDiscountedPriceLabel.adjustsFontSizeToFitWidth = true
         return productDiscountedPriceLabel
     }()
-    lazy var productStockLabel: UILabel = {
+    
+    private lazy var productStockLabel: UILabel = {
        let productStockLabel = UILabel()
         productStockLabel.translatesAutoresizingMaskIntoConstraints = false
         productStockLabel.font = .preferredFont(forTextStyle: .body)
-        productStockLabel.textAlignment = .center
         productStockLabel.adjustsFontSizeToFitWidth = true
         productStockLabel.adjustsFontForContentSizeCategory = true
         productStockLabel.textColor = .gray
-        productStockLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        productStockLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        productStockLabel.adjustsFontSizeToFitWidth = true
         return productStockLabel
     }()
-    lazy var productThumbnailImageView: UIImageView = {
-        let productThumbnailImageView = UIImageView()
-        productThumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
-        return productThumbnailImageView
-    }()
-    lazy var stackView: UIStackView = {
+    
+    private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(productNameLabel)
         stackView.addArrangedSubview(productPriceLabel)
         stackView.addArrangedSubview(productDiscountedPriceLabel)
         stackView.addArrangedSubview(productStockLabel)
-        stackView.distribution = .equalSpacing
         stackView.alignment = .center
         stackView.axis = .vertical
         return stackView
+    }()
+    
+    private lazy var mainStackView: UIStackView = {
+        let mainStackView = UIStackView()
+        mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        mainStackView.addArrangedSubview(productThumbnailImageView)
+        mainStackView.addArrangedSubview(productNameLabel)
+        mainStackView.addArrangedSubview(stackView)
+        mainStackView.alignment = .center
+        mainStackView.axis = .vertical
+        return mainStackView
     }()
 
     override init(frame: CGRect) {
@@ -78,34 +85,53 @@ class ProductGridViewCell: UICollectionViewCell {
     }
 
     private func setUpConstraints() {
-        contentView.addSubview(productThumbnailImageView)
-        contentView.addSubview(stackView)
+        self.contentView.addSubview(mainStackView)
         
         NSLayoutConstraint.activate([
-            productThumbnailImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            productThumbnailImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             productThumbnailImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.7),
-            productThumbnailImageView.heightAnchor.constraint(equalTo: productThumbnailImageView.widthAnchor, multiplier: 1),
+            productThumbnailImageView.heightAnchor.constraint(equalTo: productThumbnailImageView.widthAnchor),
             
-            productPriceLabel.leadingAnchor.constraint(equalTo: productThumbnailImageView.leadingAnchor),
-            productPriceLabel.trailingAnchor.constraint(equalTo: productThumbnailImageView.trailingAnchor),
-            
-            productNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
-            productNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
-            
-            productStockLabel.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
-            productStockLabel.trailingAnchor.constraint(equalTo: productNameLabel.trailingAnchor),
-
-            stackView.topAnchor.constraint(equalTo: productThumbnailImageView.bottomAnchor),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            stackView.centerXAnchor.constraint(equalTo: productThumbnailImageView.centerXAnchor)
-
+            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
+            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
         ])
     }
     
     override func prepareForReuse() {
+        self.contentView.backgroundColor = .white
         productThumbnailImageView.image = nil
+        productNameLabel.text = nil
+        productStockLabel.text = nil
         productStockLabel.textColor = .gray
+        productPriceLabel.attributedText = NSMutableAttributedString(string: "")
+        productStockLabel.textColor = .gray
+        productDiscountedPriceLabel.text = nil
+        productDiscountedPriceLabel.textColor = .gray
+    }
+    
+    func updateUI(with product: Product, imageData: UIImage?) {
+        self.productThumbnailImageView.image = imageData ?? UIImage(systemName: "multiply.circle.fill")
+        self.productNameLabel.text = product.title
+        self.productStockLabel.text = "잔여수량 : \(product.stock.distinguishNumberUnit())"
+        
+        if product.stock == 0 {
+            self.productStockLabel.text = "품절"
+            self.productStockLabel.textColor = .systemOrange
+        }
+        
+        guard let  discountedPrice = product.discountedPrice else {
+            let text = NSMutableAttributedString(string: "\(product.currency) \(product.price.distinguishNumberUnit())")
+            self.productPriceLabel.attributedText = text
+            self.productPriceLabel.textColor = .gray
+            
+            return
+        }
+        
+        let text = NSMutableAttributedString(string: "\(product.currency) \(product.price.distinguishNumberUnit())", attributes: [NSAttributedString.Key.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue)])
+        self.productPriceLabel.attributedText = text
+        self.productPriceLabel.textColor = .red
+        self.productDiscountedPriceLabel.text = "\(product.currency) \((product.price-discountedPrice).distinguishNumberUnit())"
     }
 }
 
