@@ -6,7 +6,6 @@ protocol URLSessionProtocol {
     func dataTask(with request: URLRequest,
                   completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
 }
-
 extension URLSession: URLSessionProtocol { }
 
 enum OpenMarketNetworkError: Error {
@@ -17,16 +16,38 @@ enum OpenMarketNetworkError: Error {
     case failedURLRequest
 }
 
-struct OpenMarketAPIManager {
+class OpenMarketAPIManager {
     static let baseURL = "https://camp-open-market.herokuapp.com"
+    static let shared = OpenMarketAPIManager()
+    private var currentPage = 1
     private let boundary = UUID().uuidString
     let session: URLSessionProtocol
+    var productList = [Product]()
     
-    init(session: URLSessionProtocol = URLSession(configuration: .default)) {
+    private init(session: URLSessionProtocol = URLSession(configuration: .default)) {
         self.session = session
     }
     
-    func requestProductList(of page: Int, completionHandler: @escaping (Result<ProductList, OpenMarketNetworkError>) -> Void) {
+    func requestProductList() {
+        self.requestProductList(of: OpenMarketAPIManager.shared.currentPage) { (result) in
+            switch result {
+            case .success (let product):
+                guard product.items.count > 0 else {
+                    return
+                }
+                
+                self.productList.append(contentsOf: product.items)
+                NotificationCenter.default.post(name: Notification.Name("dataUpdate"), object: nil)
+                self.currentPage += 1
+                self.requestProductList()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+    }
+    
+    private func requestProductList(of page: Int, completionHandler: @escaping (Result<ProductList, OpenMarketNetworkError>) -> Void) {
         guard let urlRequest = OpenMarketURLMaker.makeRequestURL(httpMethod: .get, mode: .listSearch(page: page)) else {
             print(OpenMarketNetworkError.failedURLRequest)
             return
@@ -63,33 +84,33 @@ struct OpenMarketAPIManager {
 extension OpenMarketAPIManager {
     private func fetchData<T: Decodable>(feature: FeatureList, url: URLRequest, completion: @escaping (Result<T,OpenMarketNetworkError>) -> Void) {
         let dataTask: URLSessionDataTask = session.dataTask(with: url) { (data, response, error)  in
-                guard let receivedData = data else {
-                    completion(.failure(.invalidData))
-                    return
-                }
-                
-                guard let response = response as? HTTPURLResponse,
-                      (200..<300).contains(response.statusCode) else {
-                    completion(.failure(.failedHTTPRequest))
-                    return
-                }
-                
-                switch feature {
-                case .listSearch, .productSearch:
-                    do {
-                        let convertedData = try JSONDecoder().decode(T.self, from: receivedData)
-                        completion(.success(convertedData))
-                    } catch {
-                        completion(.failure(.decodingFailure))
-                    }
-                case .productRegistration:
-                    completion(.success(receivedData as! T))
-                case .deleteProduct(let id):
-                    break
-                case .productModification(let id):
-                    break
-                }
+            guard let receivedData = data else {
+                completion(.failure(.invalidData))
+                return
             }
+            
+            guard let response = response as? HTTPURLResponse,
+                  (200..<300).contains(response.statusCode) else {
+                completion(.failure(.failedHTTPRequest))
+                return
+            }
+            
+            switch feature {
+            case .listSearch, .productSearch:
+                do {
+                    let convertedData = try JSONDecoder().decode(T.self, from: receivedData)
+                    completion(.success(convertedData))
+                } catch {
+                    completion(.failure(.decodingFailure))
+                }
+            case .productRegistration:
+                completion(.success(receivedData as! T))
+            case .deleteProduct(let id):
+                break
+            case .productModification(let id):
+                break
+            }
+        }
         dataTask.resume()
     }
     
