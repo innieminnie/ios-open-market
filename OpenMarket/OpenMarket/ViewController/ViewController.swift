@@ -26,6 +26,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateChildViews), name: Notification.Name("dataUpdate"), object: nil)
+        OpenMarketAPIManager.shared.requestProductList()
         setUpNavigationItem()
         setUpView()
     }
@@ -46,6 +48,12 @@ class ViewController: UIViewController {
     }
 }
 extension ViewController {
+    @objc func updateChildViews() {
+        DispatchQueue.main.async {
+            self.listViewController.tableView.reloadData()
+            self.gridViewController.collectionView.reloadData()
+        }
+    }
     private func setUpNavigationItem() {
         self.navigationItem.titleView = listPresentingStyleSegmentControl
         self.navigationItem.rightBarButtonItem = addProductButton

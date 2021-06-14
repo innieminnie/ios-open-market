@@ -1,22 +1,19 @@
 
 import UIKit
 
-class GridViewController: UIViewController {
-    let openMarketAPIManager = OpenMarketAPIManager()
+class GridViewController: UIViewController, ContainProducts {
     let collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         return collectionView
     }()
-    var productList = [Product]()
-    private var currentPage = 1
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpCollectionView()
-        requestProductList()
     }
+    
     private func setUpCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -75,28 +72,5 @@ extension GridViewController: UICollectionViewDelegateFlowLayout {
         let width: CGFloat = (collectionView.frame.width - 30) / 2
         let height: CGFloat = width * 1.5
         return CGSize(width: width, height: height)
-    }
-}
-extension GridViewController {
-    private func requestProductList() {
-        openMarketAPIManager.requestProductList(of: currentPage) { (result) in
-            switch result {
-            case .success (let product):
-                guard product.items.count > 0 else {
-                    return
-                }
-
-                self.productList.append(contentsOf: product.items)
-
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-                
-                self.currentPage += 1
-                self.requestProductList()
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
     }
 }

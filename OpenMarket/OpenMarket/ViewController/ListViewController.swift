@@ -1,16 +1,12 @@
 
 import UIKit
 
-class ListViewController: UIViewController {
-    let openMarketAPIManager = OpenMarketAPIManager()
+class ListViewController: UIViewController, ContainProducts {
     let tableView = UITableView()
-    var productList = [Product]()
-    private var currentPage = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTableView()
-        requestProductList()
     }
     
     private func setUpTableView() {
@@ -57,30 +53,6 @@ extension ListViewController: UITableViewDataSource {
         }
         
         return cell
-    }
-}
-extension ListViewController {
-    private func requestProductList() {
-        openMarketAPIManager.requestProductList(of: currentPage) { (result) in
-            switch result {
-            case .success (let product):
-                guard product.items.count > 0 else {
-                    return
-                }
-                
-                self.productList.append(contentsOf: product.items)
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-                
-                self.currentPage += 1
-                self.requestProductList()
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-        
     }
 }
 extension String {
