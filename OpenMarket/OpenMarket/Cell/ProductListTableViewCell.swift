@@ -14,6 +14,7 @@ class ProductListTableViewCell: UITableViewCell {
         let productNameLabel = UILabel()
         productNameLabel.translatesAutoresizingMaskIntoConstraints = false
         productNameLabel.font = .preferredFont(forTextStyle: .headline)
+        productNameLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         productNameLabel.adjustsFontForContentSizeCategory = true
         productNameLabel.textColor = .black
         return productNameLabel
@@ -29,10 +30,21 @@ class ProductListTableViewCell: UITableViewCell {
         return productStockLabel
     }()
     
+    private lazy var productInformationHorizontalStackView: UIStackView = {
+        let productInformationHorizontalStackView = UIStackView()
+        productInformationHorizontalStackView.translatesAutoresizingMaskIntoConstraints = false
+        productInformationHorizontalStackView.addArrangedSubview(productNameLabel)
+        productInformationHorizontalStackView.addArrangedSubview(productStockLabel)
+        productInformationHorizontalStackView.spacing = 8
+        productInformationHorizontalStackView.axis = .horizontal
+        return productInformationHorizontalStackView
+    }()
+    
     private lazy var productPriceLabel: UILabel = {
         let productPriceLabel = UILabel()
         productPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         productPriceLabel.font = .preferredFont(forTextStyle: .body)
+        productPriceLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         productPriceLabel.adjustsFontForContentSizeCategory = true
         productPriceLabel.textColor = .gray
         return productPriceLabel
@@ -43,8 +55,26 @@ class ProductListTableViewCell: UITableViewCell {
         productDiscountedPriceLabel.translatesAutoresizingMaskIntoConstraints = false
         productDiscountedPriceLabel.font = .preferredFont(forTextStyle: .body)
         productDiscountedPriceLabel.adjustsFontForContentSizeCategory = true
-        productDiscountedPriceLabel.textColor = .gray
         return productDiscountedPriceLabel
+    }()
+    
+    private lazy var productPriceStackView: UIStackView = {
+        let productPriceStackView = UIStackView()
+        productPriceStackView.translatesAutoresizingMaskIntoConstraints = false
+        productPriceStackView.addArrangedSubview(productPriceLabel)
+        productPriceStackView.addArrangedSubview(productDiscountedPriceLabel)
+        productPriceStackView.spacing = 5
+        productPriceStackView.axis = .horizontal
+        return productPriceStackView
+    }()
+    
+    private lazy var productInformationVerticalStackView: UIStackView = {
+        let productInformationVerticalStackView = UIStackView()
+        productInformationVerticalStackView.translatesAutoresizingMaskIntoConstraints = false
+        productInformationVerticalStackView.addArrangedSubview(productInformationHorizontalStackView)
+        productInformationVerticalStackView.addArrangedSubview(productPriceStackView)
+        productInformationVerticalStackView.axis = .vertical
+        return productInformationVerticalStackView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -58,10 +88,7 @@ class ProductListTableViewCell: UITableViewCell {
     
     private func setUpConstraints() {
         self.contentView.addSubview(productThumbnailImageView)
-        self.contentView.addSubview(productNameLabel)
-        self.contentView.addSubview(productStockLabel)
-        self.contentView.addSubview(productPriceLabel)
-        self.contentView.addSubview(productDiscountedPriceLabel)
+        self.contentView.addSubview(productInformationVerticalStackView)
         
         NSLayoutConstraint.activate([
             productThumbnailImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
@@ -69,19 +96,10 @@ class ProductListTableViewCell: UITableViewCell {
             productThumbnailImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
             productThumbnailImageView.heightAnchor.constraint(equalTo: productThumbnailImageView.widthAnchor),
             productThumbnailImageView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -5),
-            
-            productStockLabel.topAnchor.constraint(equalTo: productThumbnailImageView.topAnchor),
-            productStockLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
-            
-            productNameLabel.topAnchor.constraint(equalTo:  productStockLabel.bottomAnchor, constant: 5),
-            productNameLabel.leadingAnchor.constraint(equalTo: productThumbnailImageView.trailingAnchor, constant: 5),
-            
-            productPriceLabel.topAnchor.constraint(equalTo: productNameLabel.bottomAnchor, constant: 5),
-            productPriceLabel.leadingAnchor.constraint(equalTo: productNameLabel.leadingAnchor),
-            
-            productDiscountedPriceLabel.topAnchor.constraint(equalTo: productPriceLabel.topAnchor),
-            productDiscountedPriceLabel.leadingAnchor.constraint(equalTo: productPriceLabel.trailingAnchor, constant: 5),
-            productDiscountedPriceLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -10)
+        
+            productInformationVerticalStackView.leadingAnchor.constraint(equalTo: productThumbnailImageView.trailingAnchor, constant: 10),
+            productInformationVerticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            productInformationVerticalStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
     
