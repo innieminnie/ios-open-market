@@ -10,7 +10,7 @@ class ViewController: UIViewController {
     let listViewController = ListViewController()
     let gridViewController = GridViewController()
     let listPresentingStyleSelection = ["LIST","GRID"]
-    lazy var listPresentingStyleSegmentControl: UISegmentedControl = {
+    private lazy var listPresentingStyleSegmentControl: UISegmentedControl = {
         let control = UISegmentedControl(items: listPresentingStyleSelection)
         control.selectedSegmentIndex = 0
         control.layer.borderColor = UIColor.systemBlue.cgColor
@@ -19,7 +19,7 @@ class ViewController: UIViewController {
         control.addTarget(self, action: #selector(didTapSegment(segment:)), for: .valueChanged)
         return control
     }()
-    lazy var addProductButton: UIBarButtonItem = {
+    private lazy var addProductButton: UIBarButtonItem = {
         let button =  UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped(_:)))
         return button
     }()
@@ -48,7 +48,7 @@ class ViewController: UIViewController {
     }
 }
 extension ViewController {
-    @objc func updateChildViews() {
+    @objc private func updateChildViews() {
         DispatchQueue.main.async {
             self.listViewController.tableView.reloadData()
             self.gridViewController.collectionView.reloadData()

@@ -46,18 +46,11 @@ extension ListViewController: UITableViewDataSource {
                 return
             }
             
-            
             DispatchQueue.main.async {
                 cell.updateUI(with: product, imageData: UIImage(data: imageData))
             }
         }
         
         return cell
-    }
-}
-extension String {
-    func checkRange(of value : String) -> NSRange {
-        let string : NSString = NSString(string: self)
-        return string.range(of: value)
     }
 }
