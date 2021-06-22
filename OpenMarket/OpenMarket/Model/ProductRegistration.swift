@@ -1,7 +1,7 @@
 
 import Foundation
 
-struct ProductRegistration {
+struct ProductRegistration: Encodable {
     let title: String
     let descriptions: String
     let price: Int
@@ -17,6 +17,7 @@ struct ProductRegistration {
         "price": price,
         "currency": currency,
         "stock": stock,
+        "discounted_price": discountedPrice,
         "images": images,
         "password": password
     ]}
