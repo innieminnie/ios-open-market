@@ -8,6 +8,7 @@ class GridViewController: UIViewController, ContainProducts {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         return collectionView
     }()
+    weak var detailProductDelegate: DetailProductDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +48,7 @@ extension GridViewController: UICollectionViewDataSource {
         }
         
         DispatchQueue.global().async {
-            guard let imageURLText = product.thumbnails?.first, let imageURL = URL(string: imageURLText), let imageData = try? Data(contentsOf: imageURL) else {
+            guard let imageURLText = product.thumbnails.first, let imageURL = URL(string: imageURLText), let imageData = try? Data(contentsOf: imageURL) else {
                 DispatchQueue.main.async {
                     cell.updateUI(with: product, imageData: UIImage(systemName: "multiply.circle.fill"))
                 }
@@ -72,5 +73,22 @@ extension GridViewController: UICollectionViewDelegateFlowLayout {
         let width: CGFloat = (collectionView.frame.width - 30) / 2
         let height: CGFloat = width * 1.5
         return CGSize(width: width, height: height)
+    }
+}
+extension GridViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let productDetailViewController = ProductDetailViewController()
+        
+        OpenMarketAPIManager.shared.requestProduct(of: productList[indexPath.row].id) { result in
+            switch result {
+            case .success(let product):
+                self.detailProductDelegate = productDetailViewController
+                self.detailProductDelegate?.showCurrentProduct(product)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+        self.navigationController?.pushViewController(productDetailViewController, animated: true)
     }
 }

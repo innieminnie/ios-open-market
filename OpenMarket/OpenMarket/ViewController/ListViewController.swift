@@ -3,6 +3,7 @@ import UIKit
 
 class ListViewController: UIViewController, ContainProducts {
     let tableView = UITableView()
+    weak var detailProductDelegate: DetailProductDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -11,6 +12,7 @@ class ListViewController: UIViewController, ContainProducts {
     
     private func setUpTableView() {
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(ProductListTableViewCell.self, forCellReuseIdentifier: ProductListTableViewCell.identifier)
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -39,7 +41,7 @@ extension ListViewController: UITableViewDataSource {
         }
         
         DispatchQueue.global().async {
-            guard let imageURLText = product.thumbnails?.first, let imageURL = URL(string: imageURLText), let imageData = try? Data(contentsOf: imageURL) else {
+            guard let imageURLText = product.thumbnails.first, let imageURL = URL(string: imageURLText), let imageData = try? Data(contentsOf: imageURL) else {
                 DispatchQueue.main.async {
                     cell.updateUI(with: product, imageData: UIImage(systemName: "multiply.circle.fill"))
                 }
@@ -52,5 +54,23 @@ extension ListViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+extension ListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let productDetailViewController = ProductDetailViewController()
+        
+        OpenMarketAPIManager.shared.requestProduct(of: productList[indexPath.row].id) { result in
+            switch result {
+            case .success(let product):
+                self.detailProductDelegate = productDetailViewController
+                self.detailProductDelegate?.showCurrentProduct(product)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+        self.navigationController?.pushViewController(productDetailViewController, animated: true)
+        
     }
 }
