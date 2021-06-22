@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+protocol DetailProductDelegate: AnyObject {
+    func showCurrentProduct(_ product: Product)
+}
