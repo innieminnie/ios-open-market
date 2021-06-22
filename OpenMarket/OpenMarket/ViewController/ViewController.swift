@@ -43,8 +43,8 @@ class ViewController: UIViewController {
     }
     
     @objc private func addButtonTapped(_ sender: Any) {
-//        let registerProductViewController = RegisterProductViewController()
-//        self.present(registerProductViewController, animated: true, completion: nil)
+        let registerProductViewController = RegisterProductViewController()
+        self.present(registerProductViewController, animated: true, completion: nil)
     }
 }
 extension ViewController {

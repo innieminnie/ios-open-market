@@ -13,7 +13,3 @@ extension ContainProducts {
         return OpenMarketAPIManager.shared.productList
     }
 }
-
-protocol DetailProductDelegate: AnyObject {
-    func showCurrentProduct(_ product: Product)
-}
