@@ -44,7 +44,6 @@ class OpenMarketAPIManager {
                 print(error.localizedDescription)
             }
         }
-        
     }
     
     private func requestProductList(of page: Int, completionHandler: @escaping (Result<ProductList, OpenMarketNetworkError>) -> Void) {
@@ -56,7 +55,7 @@ class OpenMarketAPIManager {
         fetchData(feature: .listSearch(page: page), url: urlRequest, completion: completionHandler)
     }
     
-    func requestRegistration(product: ProductRegistration, completionHandler: @escaping (Result<Data,OpenMarketNetworkError>) -> Void) {
+    func requestRegistration(product: ProductRegistration, completionHandler: @escaping (Result<Product,OpenMarketNetworkError>) -> Void) {
         guard var urlRequest = OpenMarketURLMaker.makeRequestURL(httpMethod: .post, mode: .productRegistration) else {
             print(OpenMarketNetworkError.failedURLRequest)
             return
@@ -95,21 +94,14 @@ extension OpenMarketAPIManager {
                 return
             }
             
-            switch feature {
-            case .listSearch, .productSearch:
-                do {
-                    let convertedData = try JSONDecoder().decode(T.self, from: receivedData)
-                    completion(.success(convertedData))
-                } catch {
-                    completion(.failure(.decodingFailure))
-                }
-            case .productRegistration:
-                completion(.success(receivedData as! T))
-            case .deleteProduct(let id):
-                break
-            case .productModification(let id):
-                break
+            
+            do {
+                let convertedData = try JSONDecoder().decode(T.self, from: receivedData)
+                completion(.success(convertedData))
+            } catch {
+                completion(.failure(.decodingFailure))
             }
+            
         }
         dataTask.resume()
     }
