@@ -70,7 +70,6 @@ class MockOpenMarketTests: XCTestCase {
                     XCTAssertEqual(product.thumbnails, response?.thumbnails)
                     XCTAssertEqual(product.images, response?.images)
                     XCTAssertEqual(product.registrationDate, product.registrationDate)
-                    XCTAssertEqual(product.password, nil)
                 case .failure:
                     XCTFail()
                 }
